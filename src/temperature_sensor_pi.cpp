@@ -29,7 +29,7 @@ void setup(){
 	temp_sensor.config.THIS_ADDRESS6 = "[fe80::2366:e912:baff:93fa]";
 	temp_sensor.config.SERVICE_URI = "Custom_url";
 	temp_sensor.config.THIS_SYSTEM_NAME = "real_temperature_provider";
-	temp_sensor.config.SERVICE_DEFINITION = "real_temperature";
+	temp_sensor.config.SERVICE_NAME = "real_temperature";
 	temp_sensor.config.INTERFACE = "JSON";
 	temp_sensor.config.SECURITY = "Token";
 	temp_sensor.config.SECURE_ARROWHEAD_INTERFACE = false;
@@ -48,7 +48,7 @@ json_object* msgs(double value){
 	json_object_object_add(arr_cont,"Time_stamp", json_object_new_int(std::time(0)));
 	json_object_array_add(arr_obj, arr_cont);
 	json_object_object_add(obj,"Entity", arr_obj);
-	json_object_object_add(obj,"BaseName", json_object_new_string(temp_sensor.config.THIS_SYSTEM_NAME.c_str()));
+	json_object_object_add(obj,"ServiceName", json_object_new_string(temp_sensor.config.SERVICE_NAME.c_str()));
 	json_object_object_add(obj,"Unit", json_object_new_string(temp_sensor.config.UNIT.c_str()));
 
 	return obj;
@@ -57,7 +57,7 @@ json_object* msgs(double value){
 int main(int argc, char *argv[])
 {
 	setup();
-	temp_sensor.init(temp_sensor.config.THIS_SYSTEM_NAME);
+	temp_sensor.init();
 
     // These tow lines mount the device:
     system("sudo modprobe w1-gpio");

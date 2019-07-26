@@ -1,0 +1,36 @@
+{
+	"core": {
+		"access_uri": "http://130.240.5.68:8440/orchestrator/orchestration",
+		"secure_arrowhead_interface": false,
+		"secure_provider_interface": false,
+		"public_key_path": "",
+		"private_key_path": "",
+		"authentication_info": ""
+	},
+	"orchestration_flags": {
+		"override_store" : true,
+		"matchmaking" : true,
+		"metadata_search" : false,
+		"ping_providers" : false,
+		"only_preferred" : true,
+		"external_service_request" : false
+	},
+	"this_system": {
+		"this_name": "real_temperature_consumer",
+		"this_address": "130.240.152.98",
+		"this_address6": "",
+		"this_port": 8497
+	},
+	"target_system": {
+		"target_name": "real_temperature_provider",
+		"target_address": "130.240.152.98",
+		"target_port": 8496
+	},
+	"service": {
+		"service_name": "real_temperature",
+		"service_uri": "Custom_url",
+		"interface": "JSON",
+		"security": "token",
+		"unit": "Celsius"
+	}
+}
