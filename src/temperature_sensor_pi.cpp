@@ -15,15 +15,7 @@ int callback(const char *URL, std::string *return_data);
 
 Provider temp_sensor("sensor.json", callback);
 char path[50] = "/sys/bus/w1/devices/";
-char rom[20];
-char buf[100];
-DIR *dirp;
-struct dirent *direntp;
-int fd =-1;
-char *temp;
-double value;
 
-json_object* temperature;
 
 // Json msgs structure
 // 	{ 
@@ -52,15 +44,52 @@ json_object* msgs(double value){
 	return obj;
 }
 
+double temp_update(){
+	int fd =-1;
+	char buf[100];
+	// Open the file in the path.
+	if((fd = open(path,O_RDONLY)) < 0)
+    {
+        printf("open error\n");
+        return 0;
+    }
+    // Read the file
+    if(read(fd,buf,sizeof(buf)) < 0)
+    {
+        printf("read error\n");
+        return 0;
+    }
+    // Returns the first index of 't'.
+	char *temp = strchr(buf,'t');
+    // Read the string following "t=".
+    sscanf(temp,"t=%s",temp);
+    // atof: changes string to float.
+    double value = atof(temp)/1000;
+    printf("temp : %3.3f °C\n",value);
+ 
+	return value;
+}
+
+// callback for GET requests,
+// temperature are reed when some one asks for it.
 int callback(const char *URL, std::string *return_data){
-	printf("\nIn callback! Some one wont my data! \n");
-	*return_data = json_object_get_string(temperature);
-	printf("Return data: \n%s\n", return_data -> c_str());
+	printf("In callback! Some one wont my data! \n");
+	
+	// read the latest temperature
+	double value = temp_update();
+	
+	// sett the data that will be returned
+	*return_data = json_object_get_string(msgs(value));
+	
+	printf("Return data: \n%s\n\n", return_data -> c_str());
 	return 1;
 }
 
 int main(int argc, char *argv[])
 {
+	char rom[20];
+	DIR *dirp;
+	struct dirent *direntp;
 
     // These tow lines mount the device:
     system("sudo modprobe w1-gpio");
@@ -87,31 +116,11 @@ int main(int argc, char *argv[])
     // path becomes to "/sys/bus/w1/devices/28-00000xxxx/w1_slave"
     strcat(path,rom);
     strcat(path,"/w1_slave");
-    while(1)
+    
+	// infantry loop while waiting for GET requests
+	while(1)
     {
-        // Open the file in the path.
-        if((fd = open(path,O_RDONLY)) < 0)
-        {
-            printf("open error\n");
-            return 1;
-        }
-        // Read the file
-        if(read(fd,buf,sizeof(buf)) < 0)
-        {
-            printf("read error\n");
-            return 1;
-        }
-        // Returns the first index of 't'.
-        temp = strchr(buf,'t');
-        // Read the string following "t=".
-        sscanf(temp,"t=%s",temp);
-        // atof: changes string to float.
-        value = atof(temp)/1000;
-        printf(" temp : %3.3f °C\n",value);
- 
-		temperature = msgs(value);
-
-        sleep(5);
+        sleep(500);
     }
     return 0;
 }
