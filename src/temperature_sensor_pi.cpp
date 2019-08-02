@@ -24,9 +24,7 @@ double value;
 void setup(){
 	temp_sensor.config.UNIT = "Celsius";
 	temp_sensor.config.ACCESS_URI = "http://130.240.5.68:8442/serviceregistry/";
-	temp_sensor.config.ACCESS_URI_HTTPS = "https://130.240.5.68:8443/serviceregistry/";
 	temp_sensor.config.THIS_ADDRESS = "130.240.152.98";
-	temp_sensor.config.THIS_ADDRESS6 = "[fe80::2366:e912:baff:93fa]";
 	temp_sensor.config.SERVICE_URI = "Custom_url";
 	temp_sensor.config.THIS_SYSTEM_NAME = "real_temperature_provider";
 	temp_sensor.config.SERVICE_NAME = "real_temperature";
