@@ -17,9 +17,9 @@
 	},
 	"this_system": {
 		"this_name": "real_temperature_consumer",
-		"this_address": "130.240.152.98",
+		"this_address": "130.240.5.68",
 		"this_address6": "",
-		"this_port": 8497
+		"this_port": 8504
 	},
 	"target_system": {
 		"target_name": "real_temperature_provider",
