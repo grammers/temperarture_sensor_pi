@@ -11,7 +11,9 @@
 
 using namespace arrowhead;
 
-Provider temp_sensor;
+int callback(const char *URL, std::string *return_data);
+
+Provider temp_sensor("sensor.json", callback);
 char path[50] = "/sys/bus/w1/devices/";
 char rom[20];
 char buf[100];
@@ -21,20 +23,18 @@ int fd =-1;
 char *temp;
 double value;
 
-void setup(){
-	temp_sensor.config.UNIT = "Celsius";
-	temp_sensor.config.ACCESS_URI = "http://130.240.5.68:8442/serviceregistry/";
-	temp_sensor.config.THIS_ADDRESS = "130.240.152.98";
-	temp_sensor.config.SERVICE_URI = "Custom_url";
-	temp_sensor.config.THIS_SYSTEM_NAME = "real_temperature_provider";
-	temp_sensor.config.SERVICE_NAME = "real_temperature";
-	temp_sensor.config.INTERFACE = "JSON";
-	temp_sensor.config.SECURITY = "Token";
-	temp_sensor.config.SECURE_ARROWHEAD_INTERFACE = false;
-	temp_sensor.config.SECURE_PROVIDER_INTERFACE = false;
-	temp_sensor.config.THIS_PORT = 8496;
-}
+json_object* temperature;
 
+// Json msgs structure
+// 	{ 
+// 		"Entity": [ { 
+// 			"ID": "28-00000", 
+// 			"Temperature": 22.375, 
+// 			"Time_stamp": 1564733828 
+// 		} ], 
+//		"ServiceName": "real_temperature", 
+// 		"Unit": "Celsius" 
+// 	}
 json_object* msgs(double value){
 	
 	json_object* obj = json_object_new_object();	
@@ -52,10 +52,15 @@ json_object* msgs(double value){
 	return obj;
 }
 
+int callback(const char *URL, std::string *return_data){
+	printf("\nIn callback! Some one wont my data! \n");
+	*return_data = json_object_get_string(temperature);
+	printf("Return data: \n%s\n", return_data -> c_str());
+	return 1;
+}
+
 int main(int argc, char *argv[])
 {
-	setup();
-	temp_sensor.init();
 
     // These tow lines mount the device:
     system("sudo modprobe w1-gpio");
@@ -104,7 +109,7 @@ int main(int argc, char *argv[])
         value = atof(temp)/1000;
         printf(" temp : %3.3f °C\n",value);
  
-		temp_sensor.setMsgs(msgs(value));
+		temperature = msgs(value);
 
         sleep(5);
     }

@@ -1,0 +1,22 @@
+{
+	"core": {
+		"access_uri": "http://130.240.5.68:8442/serviceregistry/",
+		"secure_arrowhead_interface": false,
+		"secure_provider_interface": false,
+		"public_key_path": "",
+		"private_key_path": "",
+		"authentication_info": ""
+	},
+	"this_system": {
+		"this_name": "real_temperature_consumer",
+		"this_address": "130.240.152.98",
+		"this_port": 8496
+	},
+	"service": {
+		"service_name": "real_temperature",
+		"service_uri": "Custom_url",
+		"interface": "JSON",
+		"security": "token",
+		"unit": "Celsius"
+	}
+}
